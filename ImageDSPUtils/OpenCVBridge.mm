@@ -29,7 +29,7 @@ using namespace cv;
 
 
 #pragma mark Define Custom Functions Here
--(void)processImage{
+-(int)processImage{
     
     cv::Mat frame_gray,image_copy;
     const int kCannyLowThreshold = 300;
@@ -43,7 +43,6 @@ using namespace cv;
         {
             cvtColor( _image, frame_gray, CV_BGR2GRAY );
             bitwise_not(frame_gray, _image);
-            return;
             break;
         }
         case 2:
@@ -250,7 +249,12 @@ using namespace cv;
         default:
             break;
             
+            
+            
     }
+    
+    return -1;
+    
 }
 
 
