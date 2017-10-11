@@ -9,5 +9,5 @@
 #import "OpenCVBridge.hh"
 
 @interface OpenCVBridgeSubclass : OpenCVBridge
-
+-(bool)peakFind:(float*)arrIn withIndex:(int)index;
 @end

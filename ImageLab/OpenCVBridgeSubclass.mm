@@ -76,8 +76,8 @@ using namespace cv;
     //return 0;
 }
 
--(bool)peakFind:(float*) redArr
-      withIndex:(int)index{
+-(bool)peakFind:(float*)arrIn withIndex:(int)index
+{
     
     int window = 15;
     int start = 0;
@@ -97,9 +97,9 @@ using namespace cv;
     
     for (int i = start; i < end; i++)
     {
-        if (redArr[i] > peak)
+        if (arrIn[i] > peak)
         {
-            peak = redArr[i];
+            peak = arrIn[i];
             peakIndex = i;
         }
     }
@@ -119,8 +119,9 @@ using namespace cv;
     for (int i = 0; i < 420; i++)
     {
         
+        bool test;
         
-        if (peakFind:redArr withIndex:i)
+        if (test)
         {
             allPeaks.push_back(i);
         }
