@@ -10,4 +10,5 @@
 
 @interface OpenCVBridgeSubclass : OpenCVBridge
 bool peakFind(float*,int);
+int calculateBpm(float*);
 @end

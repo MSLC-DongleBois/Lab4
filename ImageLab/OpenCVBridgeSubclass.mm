@@ -21,6 +21,96 @@ using namespace cv;
 @dynamic image;
 //@dynamic just tells the compiler that the getter and setter methods are implemented not by the class itself but somewhere else (like the superclass or will be provided at runtime).
 
+bool peakFind(float* arrIn, int index)
+{
+    int window = 15;
+    int start = 0;
+    int end = 419;
+    int peakIndex = -1;
+    float peak = 0.0;
+    
+    if (index - window > 0)
+    {
+        start = index - window;
+    }
+    
+    if (index + window < 419)
+    {
+        end = index + window;
+    }
+    
+    for (int i = start; i < end; i++)
+    {
+        if (arrIn[i] > peak)
+        {
+            peak = arrIn[i];
+            peakIndex = i;
+        }
+    }
+    
+    if (peakIndex == index)
+    {
+        return true;
+    }
+    
+    return false;
+    
+}
+
+int calculateBpm(float* redArr)
+{
+    static std::vector<int> allPeaks;
+    static std::vector<int> peakDistances;
+    
+    for (int i = 0; i < 420; i++)
+    {
+        bool test;
+        
+        test = peakFind(redArr, i);
+        
+        if (test)
+        {
+            allPeaks.push_back(i);
+            std::cout << i << " ";
+        }
+    }
+    
+    std::cout << std::endl;
+
+    
+    for (int i = 0; i < allPeaks.size()-2; i++)
+    {
+        peakDistances.push_back(allPeaks[i + 1] - allPeaks[i]);
+        //std::cout << allPeaks[i + 1] - allPeaks[i] << " ";
+    }
+    
+    int peakSums = 0;
+    int numNegs = 0;
+    
+    for (int i = 0; i < peakDistances.size(); i++)
+    {
+        if (peakDistances[i] > 1)
+        {
+            peakSums += peakDistances[i];
+           
+        }
+        else {
+            numNegs++;
+        }
+    }
+    
+    int peakAvg = (peakSums / (peakDistances.size() - numNegs));
+    
+    std::cout << peakAvg << std::endl;
+    
+    float heartBeatDongleConverter = 2.7777;
+    int convertedBpm = (int)((float)peakAvg * heartBeatDongleConverter);
+    
+    std::cout << convertedBpm << std::endl;
+    
+    return 50;
+}
+
 -(int)processImage{
     
     cv::Mat image_copy;
@@ -64,71 +154,14 @@ using namespace cv;
         if (count == iters)
         {
             NSLog(@"BGR Arrays are filled");
-            
-            
-            
-            
-            
+            //calculateBpm(avgRed);
+            bpm = calculateBpm(avgRed);
         }
         
     }
     
     //return 0;
-}
-
--(bool)peakFind:(float*)arrIn withIndex:(int)index
-{
-    
-    int window = 15;
-    int start = 0;
-    int end = 419;
-    int peakIndex = -1;
-    float peak = 0.0;
-    
-    if (index - window > 0)
-    {
-        start = index - window;
-    }
-    
-    if (index + window < 419)
-    {
-        end = index + window;
-    }
-    
-    for (int i = start; i < end; i++)
-    {
-        if (arrIn[i] > peak)
-        {
-            peak = arrIn[i];
-            peakIndex = i;
-        }
-    }
-    
-    if (peakIndex == index)
-    {
-        return true;
-    }
-    
-    return false;
-    
-}
-
--(int)calculateBpm:(float*) redArr {
-    static std::vector<int> allPeaks;
-    
-    for (int i = 0; i < 420; i++)
-    {
-        
-        bool test;
-        
-        
-        test = peakFind(redArr, i);
-        if (test)
-        {
-            allPeaks.push_back(i);
-        }
-    }
-    
+    return bpm;
 }
 
 
