@@ -121,6 +121,8 @@ using namespace cv;
         
         bool test;
         
+        
+        test = peakFind(redArr, i);
         if (test)
         {
             allPeaks.push_back(i);
