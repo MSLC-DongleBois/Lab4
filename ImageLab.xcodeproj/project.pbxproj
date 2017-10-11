@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02672E451F8EBE0400166DAB /* OpenCVBridgeSubclass.mm in Sources */ = {isa = PBXBuildFile; fileRef = 02672E431F8EBE0400166DAB /* OpenCVBridgeSubclass.mm */; };
 		B650B31B1D8340F0000114A1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B650B31A1D8340F0000114A1 /* AppDelegate.swift */; };
 		B650B31D1D8340F0000114A1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B650B31C1D8340F0000114A1 /* ViewController.swift */; };
 		B650B3201D8340F0000114A1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B650B31E1D8340F0000114A1 /* Main.storyboard */; };
@@ -40,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		02672E431F8EBE0400166DAB /* OpenCVBridgeSubclass.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVBridgeSubclass.mm; sourceTree = "<group>"; };
+		02672E441F8EBE0400166DAB /* OpenCVBridgeSubclass.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OpenCVBridgeSubclass.hh; sourceTree = "<group>"; };
 		B650B3171D8340F0000114A1 /* ImageLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B650B31A1D8340F0000114A1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B650B31C1D8340F0000114A1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +118,8 @@
 		B650B3191D8340F0000114A1 /* ImageLab */ = {
 			isa = PBXGroup;
 			children = (
+				02672E441F8EBE0400166DAB /* OpenCVBridgeSubclass.hh */,
+				02672E431F8EBE0400166DAB /* OpenCVBridgeSubclass.mm */,
 				B650B31A1D8340F0000114A1 /* AppDelegate.swift */,
 				B650B31C1D8340F0000114A1 /* ViewController.swift */,
 				D9EC93271F8EBBDB00A12654 /* HeartViewController.swift */,
@@ -294,6 +299,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6E657991D95AA4500E75C60 /* VideoAnalgesic.swift in Sources */,
+				02672E451F8EBE0400166DAB /* OpenCVBridgeSubclass.mm in Sources */,
 				B650B31D1D8340F0000114A1 /* ViewController.swift in Sources */,
 				B650B31B1D8340F0000114A1 /* AppDelegate.swift in Sources */,
 				D9EC93281F8EBBDB00A12654 /* HeartViewController.swift in Sources */,
