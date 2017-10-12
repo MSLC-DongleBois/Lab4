@@ -71,7 +71,7 @@ int calculateBpm(float* redArr)
         if (test)
         {
             allPeaks.push_back(i);
-            std::cout << i << " ";
+            //std::cout << i << " ";
         }
     }
     
@@ -101,14 +101,14 @@ int calculateBpm(float* redArr)
     
     int peakAvg = (peakSums / (peakDistances.size() - numNegs));
     
-    std::cout << peakAvg << std::endl;
+    //std::cout << peakAvg << std::endl;
     
     float heartBeatDongleConverter = 2.7777;
     int convertedBpm = (int)((float)peakAvg * heartBeatDongleConverter);
     
-    std::cout << convertedBpm << std::endl;
+    std::cout << "BPM: " << convertedBpm << std::endl;
     
-    return 50;
+    return convertedBpm;
 }
 
 -(int)processImage{
@@ -126,7 +126,7 @@ int calculateBpm(float* redArr)
     static int count = 0;
     const int iters = 420;
     
-    int threshold = 50;
+    int threshold = 55;
     
     static int bpm = 0;
     
@@ -153,11 +153,15 @@ int calculateBpm(float* redArr)
         
         if (count == iters)
         {
-            NSLog(@"BGR Arrays are filled");
-            //calculateBpm(avgRed);
             bpm = calculateBpm(avgRed);
+            count = 0;
         }
         
+    }
+    
+    else
+    {
+        return -1;
     }
     
     //return 0;

@@ -10,6 +10,8 @@ import UIKit
 import AVFoundation
 
 var statusBarIsHidden = true
+
+
 class HeartViewController: UIViewController   {
     
     //MARK: Class Properties
@@ -21,6 +23,8 @@ class HeartViewController: UIViewController   {
     var isFlashOn = false
     
     //MARK: Outlets in view
+    @IBOutlet weak var instructionLabel: UILabel!
+    @IBOutlet weak var bpmLabel: UILabel!
     
     //MARK: ViewController Hierarchy
     override func viewDidLoad() {
@@ -56,7 +60,35 @@ class HeartViewController: UIViewController   {
                              withBounds: retImage.extent, // the first face bounds
             andContext: self.videoManager.getCIContext())
         
-        self.bridge.processImage()
+        var bpm: Int32 = -1
+        
+        bpm = self.bridge.processImage()
+        
+       
+        
+        DispatchQueue.main.async() {
+            if (bpm == -1)
+            {
+                self.instructionLabel.isHidden = false
+            }
+                
+            else
+            {
+                if (bpm < 10)
+                {
+                    self.bpmLabel.text = "Scanning..."
+                    self.instructionLabel.isHidden = true
+                }
+                
+                else
+                {
+                    self.bpmLabel.text = String(bpm) + " BPM"
+                }
+                
+            }
+        }
+        
+  
         
         retImage = self.bridge.getImageComposite() // get back opencv processed part of the image (overlayed on original)
         

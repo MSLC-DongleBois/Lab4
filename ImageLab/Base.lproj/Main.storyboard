@@ -141,6 +141,10 @@
                             <constraint firstItem="bVn-rN-RhK" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="1" id="UPe-I3-Amg"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="bpmLabel" destination="bVn-rN-RhK" id="pIx-3W-St9"/>
+                        <outlet property="instructionLabel" destination="Vjz-ub-0iB" id="YAh-8C-Sjw"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
