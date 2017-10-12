@@ -50,55 +50,64 @@ class FaceViewController: UIViewController {
         // from Larson's slides
         let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyHigh]
         let detector = CIDetector(ofType: CIDetectorTypeFace, context: self.videoManager.getCIContext(), options: optsDetector)
+        
         // added smile & blink detection
         var optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.shared.statusBarOrientation), CIDetectorSmile:true, CIDetectorEyeBlink:true] as [String : Any]
-        self.videoManager.setProcessingBlock(newProcessBlock: {(inputImage:CIImage)->(CIImage) in
-            var features = detector?.features(in: inputImage, options: optsFace)
-            var swap = CGPoint()
-            var buffer = inputImage
-            
-            // if no faces detected
-            if features?.count == 0{
-                DispatchQueue.main.async{
-                    self.numberOfFaces.text = "No Faces Found"
-                }
+
+        var features = detector?.features(in: inputImage, options: optsFace)
+        var swap = CGPoint()
+        var buffer = inputImage
+        
+        // if no faces detected
+        if features?.count == 0{
+            DispatchQueue.main.async{
+                self.numberOfFaces.text = "No Faces Found"
             }
-            else if features?.count == 1{
-                let face : CIFaceFeature = features![0] as! CIFaceFeature
-                var faceDetails = ""
-                if face.hasSmile{
-                    faceDetails += "Smile "
-                }
-                else{
-                    faceDetails += "No Smile "
-                }
-                if face.leftEyeClosed{
-                    faceDetails += "Left Eye Closed "
-                }
-                else{
-                    faceDetails += "Left Eye Open "
-                }
-                if face.rightEyeClosed{
-                    faceDetails += "Right Eye Closed"
-                }
-                else{
-                    faceDetails += "Right Eye Open"
-                }
-                DispatchQueue.main.async{
-                    self.numberOfFaces.text = faceDetails
-                }
+        }
+        else if features?.count == 1{
+            let face : CIFaceFeature = features![0] as! CIFaceFeature
+            var faceDetails = ""
+            if face.hasSmile{
+                faceDetails += "Smile "
             }
             else{
-                DispatchQueue.main.async{
-                    let count = features?.count
-                    self.numberOfFaces.text = "\(count)"
-                }
+                faceDetails += "No Smile "
             }
-            for face in features as! [CIFaceFeature]{
-                
+            if face.leftEyeClosed{
+                faceDetails += "Left Eye Closed "
             }
-            return buffer
-        })
+            else{
+                faceDetails += "Left Eye Open "
+            }
+            if face.rightEyeClosed{
+                faceDetails += "Right Eye Closed"
+            }
+            else{
+                faceDetails += "Right Eye Open"
+            }
+            DispatchQueue.main.async{
+                self.numberOfFaces.text = faceDetails
+            }
+        }
+        else{
+            DispatchQueue.main.async{
+                let count = features?.count
+                self.numberOfFaces.text = "\(count)"
+            }
+        }
+        
+        for face in features as! [CIFaceFeature]{
+            
+        }
+        return buffer
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        if(self.videoManager.isRunning){
+            self.videoManager.turnOffFlash()
+            self.videoManager.stop()
+            self.videoManager.shutdown()
+        }
     }
     
     override func didReceiveMemoryWarning() {
