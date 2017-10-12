@@ -25,6 +25,16 @@ class FaceViewController: UIViewController {
         
         self.videoManager = VideoAnalgesic.sharedInstance
         
+        self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.front)
+        
+        self.videoManager.setProcessingBlock(newProcessBlock: self.processFaces)
+        
+        if !self.videoManager.isRunning{
+            self.videoManager.start()
+        }
+    }
+
+    func processFaces(inputImage:CIImage) -> CIImage{
         // setting up CIColors to use in conjunction with CIFilters
         // UIColor -> CIColor
         let uiRed : UIColor = UIColor.red
@@ -89,12 +99,8 @@ class FaceViewController: UIViewController {
             }
             return buffer
         })
-        
-        if !self.videoManager.isRunning{
-            self.videoManager.start()
-        }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
