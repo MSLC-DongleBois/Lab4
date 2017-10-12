@@ -73,10 +73,10 @@
             </objects>
             <point key="canvasLocation" x="111" y="640"/>
         </scene>
-        <!--View Controller-->
+        <!--Face View Controller-->
         <scene sceneID="8g3-pR-Dd9">
             <objects>
-                <viewController id="EKH-Na-JeB" sceneMemberID="viewController">
+                <viewController id="EKH-Na-JeB" customClass="FaceViewController" customModule="ImageLab" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="eqy-uU-XjS"/>
                         <viewControllerLayoutGuide type="bottom" id="38d-Qb-ZCM"/>
@@ -84,8 +84,20 @@
                     <view key="view" contentMode="scaleToFill" id="P6L-8V-Wdc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Faces" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tDK-eM-Yei">
+                                <rect key="frame" x="166" y="323" width="45" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
+                    <connections>
+                        <outlet property="numberOfFaces" destination="tDK-eM-Yei" id="ASx-kO-WQx"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v9z-e3-40d" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
