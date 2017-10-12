@@ -25,7 +25,7 @@ class FaceViewController: UIViewController {
         
         self.videoManager = VideoAnalgesic.sharedInstance
         
-        self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.front)
+        self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.back)
         
         self.videoManager.setProcessingBlock(newProcessBlock: self.processFaces)
         
@@ -48,7 +48,7 @@ class FaceViewController: UIViewController {
         self.mouthFilter.setValue(mouthColor, forKey: "inputColor1")
         
         // from Larson's slides
-        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyHigh]
+        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyLow]
         let detector = CIDetector(ofType: CIDetectorTypeFace, context: self.videoManager.getCIContext(), options: optsDetector)
         
         // added smile & blink detection
