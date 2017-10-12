@@ -96,14 +96,15 @@ class FaceViewController: UIViewController {
         }
         
         for face in features as! [CIFaceFeature]{
-            let width = face.bounds.size.width
+            let height = face.bounds.size.height
             point.x = face.bounds.midX
             point.y = face.bounds.midY
             
             //providing center of face x,y values as vector to first filter
+            self.faceFilter.setValue(buffer, forKey: "inputImage")
             self.faceFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
-            self.faceFilter.setValue(width/2, forKey: "inputRadius")
-            self.faceFilter.setValue(20, forKey: "inputAngle")
+            self.faceFilter.setValue(height/2, forKey: "inputRadius")
+            self.faceFilter.setValue(0.7, forKey: "inputAngle")
             let combineFilter : CIFilter = CIFilter(name: "CISourceOverCompositing")!
             combineFilter.setValue(self.faceFilter.outputImage, forKey: "inputImage")
             combineFilter.setValue(buffer, forKey: "inputBackgroundImage")
