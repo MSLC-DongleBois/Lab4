@@ -12,9 +12,9 @@ import AVFoundation
 class FaceViewController: UIViewController {
     var videoManager : VideoAnalgesic! = nil
     
-    let faceFilter : CIFilter = CIFilter(name: "CISmoothLinearGradient")!
-    let eyeFilter : CIFilter = CIFilter(name: "CISmoothLinearGradient")!
-    let mouthFilter : CIFilter = CIFilter(name: "CISmoothLinearGradient")!
+    let faceFilter : CIFilter = CIFilter(name: "CITwirlDistortion")!
+//    let eyeFilter : CIFilter = CIFilter(name: "CISmoothLinearGradient")!
+//    let mouthFilter : CIFilter = CIFilter(name: "CISmoothLinearGradient")!
     
     @IBOutlet weak var numberOfFaces: UILabel!
     
@@ -25,7 +25,7 @@ class FaceViewController: UIViewController {
         
         self.videoManager = VideoAnalgesic.sharedInstance
         
-        self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.back)
+        self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.front)
         
         self.videoManager.setProcessingBlock(newProcessBlock: self.processFaces)
         
@@ -43,19 +43,19 @@ class FaceViewController: UIViewController {
         let faceColor : CIColor = CIColor(color: uiRed)
         let eyeColor : CIColor = CIColor(color: uiBlue)
         let mouthColor : CIColor = CIColor(color: uiGreen)
-        self.faceFilter.setValue(faceColor, forKey: "inputColor1")
-        self.eyeFilter.setValue(eyeColor, forKey: "inputColor1")
-        self.mouthFilter.setValue(mouthColor, forKey: "inputColor1")
+//        self.faceFilter.setValue(faceColor, forKey: "inputColor1")
+//        self.eyeFilter.setValue(eyeColor, forKey: "inputColor1")
+//        self.mouthFilter.setValue(mouthColor, forKey: "inputColor1")
         
         // from Larson's slides
-        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyHigh]
+        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyLow]
         let detector = CIDetector(ofType: CIDetectorTypeFace, context: self.videoManager.getCIContext(), options: optsDetector)
         
         // added smile & blink detection
         var optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.shared.statusBarOrientation), CIDetectorSmile:true, CIDetectorEyeBlink:true] as [String : Any]
 
         var features = detector?.features(in: inputImage, options: optsFace)
-        var swap = CGPoint()
+        var point = CGPoint()
         var buffer = inputImage
         
         // if no faces detected
@@ -91,28 +91,32 @@ class FaceViewController: UIViewController {
         }
         else{
             DispatchQueue.main.async{
-                let count = features?.count
-                self.numberOfFaces.text = "\(count)"
+                self.numberOfFaces.text = String(describing: features?.count)
             }
         }
         
         for face in features as! [CIFaceFeature]{
+            let width = face.bounds.size.width
+            point.x = face.bounds.midX
+            point.y = face.bounds.midY
             
+            //providing center of face x,y values as vector to first filter
+            self.faceFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
+            self.faceFilter.setValue(width/2, forKey: "inputRadius")
+            self.faceFilter.setValue(20, forKey: "inputAngle")
+            let combineFilter : CIFilter = CIFilter(name: "CISourceOverCompositing")!
+            combineFilter.setValue(self.faceFilter.outputImage, forKey: "inputImage")
+            combineFilter.setValue(buffer, forKey: "inputBackgroundImage")
+            buffer = combineFilter.outputImage!
         }
         return buffer
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         if(self.videoManager.isRunning){
-            self.videoManager.turnOffFlash()
             self.videoManager.stop()
             self.videoManager.shutdown()
         }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        
-    }
-
 }
