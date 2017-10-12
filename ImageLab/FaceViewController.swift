@@ -48,7 +48,7 @@ class FaceViewController: UIViewController {
         self.mouthFilter.setValue(mouthColor, forKey: "inputColor1")
         
         // from Larson's slides
-        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyLow]
+        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyHigh]
         let detector = CIDetector(ofType: CIDetectorTypeFace, context: self.videoManager.getCIContext(), options: optsDetector)
         
         // added smile & blink detection
