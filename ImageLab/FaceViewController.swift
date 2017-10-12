@@ -10,13 +10,19 @@ import UIKit
 import AVFoundation
 
 class FaceViewController: UIViewController {
+    // YUHHHHHH
     var videoManager : VideoAnalgesic! = nil
     
+    // filters for face, eye, mouth
     let faceFilter : CIFilter = CIFilter(name: "CITwirlDistortion")!
-//    let eyeFilter : CIFilter = CIFilter(name: "CISmoothLinearGradient")!
-//    let mouthFilter : CIFilter = CIFilter(name: "CISmoothLinearGradient")!
+    let eyeFilter : CIFilter = CIFilter(name: "CIPinchDistortion")!
+    let mouthFilter : CIFilter = CIFilter(name: "CIRadialGradient")!
     
+    // labels & outlets
+    @IBOutlet weak var leftBlink: UILabel!
+    @IBOutlet weak var rightBlink: UILabel!
     @IBOutlet weak var numberOfFaces: UILabel!
+    @IBOutlet weak var smileDetect: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +31,8 @@ class FaceViewController: UIViewController {
         
         self.videoManager = VideoAnalgesic.sharedInstance
         
+        // front camera for convenience
+        // can set to "AVCaptureDevice.Position.back" if desired
         self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.front)
         
         self.videoManager.setProcessingBlock(newProcessBlock: self.processFaces)
@@ -35,17 +43,14 @@ class FaceViewController: UIViewController {
     }
 
     func processFaces(inputImage:CIImage) -> CIImage{
-        // setting up CIColors to use in conjunction with CIFilters
+        // setting up CIColor to use in conjunction with CIRadialGradient
         // UIColor -> CIColor
-        let uiRed : UIColor = UIColor.red
-        let uiBlue : UIColor = UIColor.blue
         let uiGreen : UIColor = UIColor.green
-        let faceColor : CIColor = CIColor(color: uiRed)
-        let eyeColor : CIColor = CIColor(color: uiBlue)
-        let mouthColor : CIColor = CIColor(color: uiGreen)
-//        self.faceFilter.setValue(faceColor, forKey: "inputColor1")
-//        self.eyeFilter.setValue(eyeColor, forKey: "inputColor1")
-//        self.mouthFilter.setValue(mouthColor, forKey: "inputColor1")
+        let blank : UIColor = UIColor.clear
+        let mouthColorOne : CIColor = CIColor(color: uiGreen)
+        let mouthColorTwo : CIColor = CIColor(color: blank)
+        self.mouthFilter.setValue(mouthColorOne, forKey: "inputColor1")
+        self.mouthFilter.setValue(mouthColorTwo, forKey: "inputColor0")
         
         // from Larson's slides
         let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyLow]
@@ -54,61 +59,130 @@ class FaceViewController: UIViewController {
         // added smile & blink detection
         var optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.shared.statusBarOrientation), CIDetectorSmile:true, CIDetectorEyeBlink:true] as [String : Any]
 
+        // gimme them faces BOI
         var features = detector?.features(in: inputImage, options: optsFace)
+        // need variable for various coordinates
         var point = CGPoint()
+        // buffer set equal to each frame
         var buffer = inputImage
-        
-        // if no faces detected
+        // if ZERO faces are detected
         if features?.count == 0{
             DispatchQueue.main.async{
                 self.numberOfFaces.text = "No Faces Found"
+                self.smileDetect.text = ""
+                self.leftBlink.text = ""
+                self.rightBlink.text = ""
             }
         }
+        // if ONLY ONE face is detected
         else if features?.count == 1{
+            let faceCount = 1
+            var smile = ""
+            var leftEye = ""
+            var rightEye = ""
             let face : CIFaceFeature = features![0] as! CIFaceFeature
-            var faceDetails = ""
             if face.hasSmile{
-                faceDetails += "Smile "
+                smile = "😊"
             }
             else{
-                faceDetails += "No Smile "
+                smile = "😐"
             }
             if face.leftEyeClosed{
-                faceDetails += "Left Eye Closed "
+                leftEye = "Closed"
             }
             else{
-                faceDetails += "Left Eye Open "
+                leftEye = "Open"
             }
             if face.rightEyeClosed{
-                faceDetails += "Right Eye Closed"
+                rightEye = "Closed"
             }
             else{
-                faceDetails += "Right Eye Open"
+                rightEye = "Open"
             }
             DispatchQueue.main.async{
-                self.numberOfFaces.text = faceDetails
+                self.numberOfFaces.text = String(faceCount)
+                self.smileDetect.text = smile
+                self.leftBlink.text = leftEye
+                self.rightBlink.text = rightEye
             }
         }
+        // MULTIPLE faces are detected
         else{
             DispatchQueue.main.async{
                 self.numberOfFaces.text = String(describing: features?.count)
+                self.smileDetect.text = ""
+                self.leftBlink.text = ""
+                self.rightBlink.text = ""
             }
         }
         
         for face in features as! [CIFaceFeature]{
+            // height of face
             let height = face.bounds.size.height
+            // set x, y values for middle of FACE
             point.x = face.bounds.midX
             point.y = face.bounds.midY
-            
-            //providing center of face x,y values as vector to first filter
+            // image from camera
             self.faceFilter.setValue(buffer, forKey: "inputImage")
+            // center of face
             self.faceFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
+            // half of face height
             self.faceFilter.setValue(height/2, forKey: "inputRadius")
+            // amount of twirl
             self.faceFilter.setValue(0.7, forKey: "inputAngle")
             let combineFilter : CIFilter = CIFilter(name: "CISourceOverCompositing")!
+            // combine & set to buffer
             combineFilter.setValue(self.faceFilter.outputImage, forKey: "inputImage")
             combineFilter.setValue(buffer, forKey: "inputBackgroundImage")
             buffer = combineFilter.outputImage!
+            
+            if face.hasLeftEyePosition{
+                // set new x, y values for LEFT EYE
+                point.x = face.leftEyePosition.x
+                point.y = face.leftEyePosition.y
+                // image from camera
+                self.eyeFilter.setValue(buffer, forKey: "inputImage")
+                // x, y values for left eye
+                self.eyeFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
+                // radius value for distortion
+                self.eyeFilter.setValue(50, forKey: "inputRadius")
+                // scale value for distortion
+                self.eyeFilter.setValue(0.25, forKey: "inputScale")
+                // combine & set to buffer
+                combineFilter.setValue(self.eyeFilter.outputImage, forKey: "inputImage")
+                combineFilter.setValue(buffer, forKey: "inputBackgroundImage")
+                buffer = combineFilter.outputImage!
+            }
+            
+            if face.hasRightEyePosition{
+                // set new x, y values for RIGHT EYE
+                point.x = face.rightEyePosition.x
+                point.y = face.rightEyePosition.y
+                // image from camera
+                self.eyeFilter.setValue(buffer, forKey: "inputImage")
+                // x, y values for left eye
+                self.eyeFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
+                // radius value for distortion
+                self.eyeFilter.setValue(50, forKey: "inputRadius")
+                // scale value for distortion
+                self.eyeFilter.setValue(0.25, forKey: "inputScale")
+                // combine & set to buffer
+                combineFilter.setValue(self.eyeFilter.outputImage, forKey: "inputImage")
+                combineFilter.setValue(buffer, forKey: "inputBackgroundImage")
+                buffer = combineFilter.outputImage!
+            }
+            
+            if face.hasMouthPosition{
+                point.x = face.mouthPosition.x
+                point.y = face.mouthPosition.y
+                self.mouthFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
+                self.mouthFilter.setValue(height/5, forKey: "inputRadius0")
+                self.mouthFilter.setValue(height/5 - 10, forKey: "inputRadius1")
+                combineFilter.setValue(self.mouthFilter.outputImage, forKey: "inputImage")
+                combineFilter.setValue(buffer, forKey: "inputBackgroundImage")
+                buffer = combineFilter.outputImage!
+            }
+            
         }
         return buffer
     }
