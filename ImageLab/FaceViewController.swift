@@ -90,7 +90,9 @@ class FaceViewController: UIViewController {
             return buffer
         })
         
-        
+        if !self.videoManager.isRunning{
+            self.videoManager.start()
+        }
     }
 
     override func didReceiveMemoryWarning() {
