@@ -161,7 +161,8 @@ class VideoAnalgesic: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AV
             transform = transform.rotated(by: CGFloat(Double.pi/2))
             //transform = CGAffineTransformRotate(transform, CGFloat(M_PI_2))
             if devicePosition == AVCaptureDevice.Position.front{
-                //transform = transform.concatenating(CGAffineTransform(scaleX: -1.0, y: 1.0))
+                transform = transform.concatenating(CGAffineTransform(scaleX: -1.0, y: 1.0))
+                print("we are attempting mirror")
             }
             videoPreviewView.transform = transform
             videoPreviewView.frame = window!!.bounds
