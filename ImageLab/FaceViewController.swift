@@ -176,8 +176,8 @@ class FaceViewController: UIViewController {
                 point.x = face.mouthPosition.x
                 point.y = face.mouthPosition.y
                 self.mouthFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
-                self.mouthFilter.setValue(height/5, forKey: "inputRadius0")
-                self.mouthFilter.setValue(height/5 - 10, forKey: "inputRadius1")
+                self.mouthFilter.setValue(height/7, forKey: "inputRadius0")
+                self.mouthFilter.setValue(height/7 - 10, forKey: "inputRadius1")
                 combineFilter.setValue(self.mouthFilter.outputImage, forKey: "inputImage")
                 combineFilter.setValue(buffer, forKey: "inputBackgroundImage")
                 buffer = combineFilter.outputImage!
