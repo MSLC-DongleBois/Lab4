@@ -109,7 +109,7 @@ class FaceViewController: UIViewController {
         // MULTIPLE faces are detected
         else{
             DispatchQueue.main.async{
-                self.numberOfFaces.text = String(describing: features?.count)
+                self.numberOfFaces.text = String(describing: features!.count)
                 self.smileDetect.text = ""
                 self.leftBlink.text = ""
                 self.rightBlink.text = ""
@@ -177,7 +177,7 @@ class FaceViewController: UIViewController {
                 point.y = face.mouthPosition.y
                 self.mouthFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
                 self.mouthFilter.setValue(height/7, forKey: "inputRadius0")
-                self.mouthFilter.setValue(height/7 - 10, forKey: "inputRadius1")
+                self.mouthFilter.setValue(height/7 - 20, forKey: "inputRadius1")
                 combineFilter.setValue(self.mouthFilter.outputImage, forKey: "inputImage")
                 combineFilter.setValue(buffer, forKey: "inputBackgroundImage")
                 buffer = combineFilter.outputImage!
