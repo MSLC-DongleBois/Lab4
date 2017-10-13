@@ -159,6 +159,7 @@ class VideoAnalgesic: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AV
             // because the native video image from the back camera is in UIDeviceOrientationLandscapeLeft (i.e. the home button is on the right), we need to apply a clockwise 90 degree transform so that we can draw the video preview as if we were in a landscape-oriented view; if you're using the front camera and you want to have a mirrored preview (so that the user is seeing themselves in the mirror), you need to apply an additional horizontal flip (by concatenating CGAffineTransformMakeScale(-1.0, 1.0) to the rotation transform)
             
             transform = transform.rotated(by: CGFloat(Double.pi/2))
+            transform = transform.concatenating(CGAffineTransform(scaleX: -1.0, y: 1.0))
             //transform = CGAffineTransformRotate(transform, CGFloat(M_PI_2))
             if devicePosition == AVCaptureDevice.Position.front{
                 transform = transform.concatenating(CGAffineTransform(scaleX: -1.0, y: 1.0))
