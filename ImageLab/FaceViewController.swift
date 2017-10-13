@@ -88,16 +88,16 @@ class FaceViewController: UIViewController {
                 smile = "😐"
             }
             if face.leftEyeClosed{
-                leftEye = "Closed"
+                leftEye = "L👁: Closed"
             }
             else{
-                leftEye = "Open"
+                leftEye = "L👁: Open"
             }
             if face.rightEyeClosed{
-                rightEye = "Closed"
+                rightEye = "R👁: Closed"
             }
             else{
-                rightEye = "Open"
+                rightEye = "R👁: Open"
             }
             DispatchQueue.main.async{
                 self.numberOfFaces.text = String(faceCount)
@@ -145,7 +145,7 @@ class FaceViewController: UIViewController {
                 // x, y values for left eye
                 self.eyeFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
                 // radius value for distortion
-                self.eyeFilter.setValue(50, forKey: "inputRadius")
+                self.eyeFilter.setValue(150, forKey: "inputRadius")
                 // scale value for distortion
                 self.eyeFilter.setValue(0.25, forKey: "inputScale")
                 // combine & set to buffer
@@ -163,7 +163,7 @@ class FaceViewController: UIViewController {
                 // x, y values for left eye
                 self.eyeFilter.setValue(CIVector(x: point.x, y:point.y), forKey: "inputCenter")
                 // radius value for distortion
-                self.eyeFilter.setValue(50, forKey: "inputRadius")
+                self.eyeFilter.setValue(150, forKey: "inputRadius")
                 // scale value for distortion
                 self.eyeFilter.setValue(0.25, forKey: "inputScale")
                 // combine & set to buffer

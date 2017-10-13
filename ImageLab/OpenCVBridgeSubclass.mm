@@ -101,10 +101,13 @@ int calculateBpm(float* redArr)
     
     int peakAvg = (peakSums / (peakDistances.size() - numNegs));
     
-    //std::cout << peakAvg << std::endl;
+    // TO BE HONEST, our constant worked WAY better in practice... but we will use the proper equation anyways
     
-    float heartBeatDongleConverter = 2.7777;
-    int convertedBpm = (int)((float)peakAvg * heartBeatDongleConverter);
+//    float heartBeatDongleConverter = 2.7777;
+//    int convertedBpm = (int)((float)peakAvg * heartBeatDongleConverter);
+    
+    int frameRate = 35;
+    int convertedBpm = (60 * frameRate) / peakAvg;
     
     std::cout << "BPM: " << convertedBpm << std::endl;
     
@@ -121,7 +124,7 @@ int calculateBpm(float* redArr)
     cvtColor(image, image_copy, CV_BGRA2BGR); // get rid of alpha for processing
     avgPixelIntensity = cv::mean( image_copy );
     sprintf(text,"Avg. B: %.0f, G: %.0f, R: %.0f", avgPixelIntensity.val[0],avgPixelIntensity.val[1],avgPixelIntensity.val[2]);
-    cv::putText(image, text, cv::Point(20, 100), FONT_HERSHEY_PLAIN, 0.75, Scalar::all(255), 1, 2);
+    //cv::putText(image, text, cv::Point(20, 100), FONT_HERSHEY_PLAIN, 0.75, Scalar::all(255), 1, 2);
     
     static int count = 0;
     const int iters = 420;

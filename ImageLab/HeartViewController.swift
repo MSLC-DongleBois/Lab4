@@ -82,7 +82,7 @@ class HeartViewController: UIViewController   {
                 
                 else
                 {
-                    self.bpmLabel.text = String(bpm) + " BPM"
+                    self.bpmLabel.text = "Last Record: " + String(bpm) + " BPM"
                 }
                 
             }
